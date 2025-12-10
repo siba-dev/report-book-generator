@@ -1,7 +1,7 @@
-package com.siba.reportbookgen.app
+package de.siba.reportbookgen.app
 
-import com.siba.reportbookgen.service.MultiFileService
-import com.siba.reportbookgen.service.MutliFileGenerationService
+import de.siba.reportbookgen.service.MultiFileService
+import de.siba.reportbookgen.service.MutliFileGenerationService
 import java.io.File
 
 fun main(args: Array<String>) {

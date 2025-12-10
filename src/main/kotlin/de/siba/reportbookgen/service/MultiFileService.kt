@@ -1,4 +1,4 @@
-package com.siba.reportbookgen.service
+package de.siba.reportbookgen.service
 
 import java.io.File
 

@@ -1,4 +1,4 @@
-package com.siba.reportbookgen.model
+package de.siba.reportbookgen.model
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

@@ -1,8 +1,8 @@
-package com.siba.reportbookgen.service
+package de.siba.reportbookgen.service
 
-import com.siba.reportbookgen.model.ReportBookData
-import com.siba.reportbookgen.model.ReportBookWeekJson
-import com.siba.reportbookgen.model.SchoolSubjectsJson
+import de.siba.reportbookgen.model.ReportBookData
+import de.siba.reportbookgen.model.ReportBookWeekJson
+import de.siba.reportbookgen.model.SchoolSubjectsJson
 import kotlinx.serialization.json.Json
 import org.docx4j.model.datastorage.migration.VariablePrepare
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage.load
