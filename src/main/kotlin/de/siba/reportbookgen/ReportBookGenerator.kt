@@ -1,4 +1,4 @@
-package de.siba.reportbookgen.app
+package de.siba.reportbookgen
 
 import de.siba.reportbookgen.service.MultiFileService
 import de.siba.reportbookgen.service.MutliFileGenerationService
