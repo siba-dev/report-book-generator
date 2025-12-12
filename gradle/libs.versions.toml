@@ -1,0 +1,11 @@
+[versions]
+kotlin = "2.2.0"
+docx4j = "11.5.5"
+slf4j = "2.0.9"
+kotlinjson = "1.9.0"
+
+[libraries]
+kotlin-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinjson" }
+docx4j-core = { module = "org.docx4j:docx4j-core", version.ref = "docx4j" }
+docx4j-jaxb = { module = "org.docx4j:docx4j-JAXB-ReferenceImpl", version.ref = "docx4j" }
+slf4j = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
