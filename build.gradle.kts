@@ -1,14 +1,13 @@
 plugins {
-    kotlin("jvm") version libs.versions.kotlin
     application
-
+    kotlin("jvm") version libs.versions.kotlin
     kotlin("plugin.serialization") version libs.versions.kotlin
 
     id("com.autonomousapps.dependency-analysis") version "3.5.1"
 }
 
 group = "de.siba"
-version = "2.0.0"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
