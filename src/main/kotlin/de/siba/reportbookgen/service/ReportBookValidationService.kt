@@ -1,23 +1,17 @@
 package de.siba.reportbookgen.service
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 
-object MultiFileService {
-    fun copyWordFiles(inputDir: File, outputDir: File) {
-        inputDir.walkTopDown()
-            .filter { Utilities.isWord(it) }
-            .forEach {
-                it.copyTo(File(outputDir, it.name))
-            }
-    }
-
+class ReportBookValidationService {
     fun findMissingWeeks(reportBookDirectory: File) {
         val foundNumbers = mutableListOf<Int>()
 
         reportBookDirectory.walkTopDown()
-            .filter { Utilities.isWord(it) }
+            .filter { ReportBookGenerationService.isWordFile(it) }
             .forEach {
-                if (Utilities.isWord(it)) {
+                if (ReportBookGenerationService.isWordFile(it)) {
                     val nameAfterNr = it.name.drop(2)
                     val numberPart = nameAfterNr.takeWhile { ch -> ch != '_' }
                     val number = numberPart.toIntOrNull()
@@ -40,4 +34,3 @@ object MultiFileService {
         }
     }
 }
-

@@ -11,14 +11,19 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
-object MutliFileGenerationService {
+class ReportBookGenerationService {
+    companion object {
+        fun isJsonFile(file: File): Boolean = file.extension.equals("json", ignoreCase = true)
+        fun isWordFile(file: File): Boolean = file.extension.equals("docx", ignoreCase = true)
+    }
+
     fun generateFromJsons(
         inputDir: File,
         outputDir: File?,
         templateMap: Map<Int, File>
     ) {
         inputDir.walkTopDown()
-            .filter { it.isFile && it.extension.equals("json", ignoreCase = true) }
+            .filter { it.isFile && isJsonFile(it) }
             .forEach {
                 process(it, outputDir, templateMap)
             }
@@ -131,5 +136,13 @@ object MutliFileGenerationService {
         val weekStartValue = data.weekStart.format(outputFormatter)
 
         return File(outputDir ?: jsonPath.parentFile, "Nr${data.weekNumber}_$weekStartValue.docx")
+    }
+
+    fun copyWordFiles(inputDir: File, outputDir: File) {
+        inputDir.walkTopDown()
+            .filter { isWordFile(it) }
+            .forEach {
+                it.copyTo(File(outputDir, it.name))
+            }
     }
 }

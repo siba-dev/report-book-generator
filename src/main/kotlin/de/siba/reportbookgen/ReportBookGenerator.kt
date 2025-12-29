@@ -1,7 +1,7 @@
 package de.siba.reportbookgen
 
-import de.siba.reportbookgen.service.MultiFileService
-import de.siba.reportbookgen.service.MutliFileGenerationService
+import de.siba.reportbookgen.service.ReportBookGenerationService
+import de.siba.reportbookgen.service.ReportBookValidationService
 import java.io.File
 
 fun main(args: Array<String>) {
@@ -19,10 +19,13 @@ fun main(args: Array<String>) {
     outputDir.listFiles()
         ?.forEach { it.delete() }
 
-    // Copy and generation
-    MultiFileService.copyWordFiles(inputDir, outputDir)
-    MutliFileGenerationService.generateFromJsons(inputDir, outputDir, templateMap)
+    // Generation
+    val generationService = ReportBookGenerationService()
+
+    generationService.copyWordFiles(inputDir, outputDir)
+    generationService.generateFromJsons(inputDir, outputDir, templateMap)
 
     // Validation
-    MultiFileService.findMissingWeeks(outputDir)
+    val validationService = ReportBookValidationService()
+    validationService.findMissingWeeks(outputDir)
 }
