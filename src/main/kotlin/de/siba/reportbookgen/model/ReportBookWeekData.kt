@@ -8,11 +8,11 @@ data class ReportBookWeekData(
     val weekStart: LocalDate,
     val weekEnd: LocalDate,
     val year: Int,
-    val activity: String,
+    val activity: List<String>,
     val activityHours: Int,
-    val teachings: String,
+    val teachings: List<String>,
     val teachingsHours: Int,
-    val school: String,
+    val school: Map<String, String>,
     val schoolHours: Int
 ) {
     init {

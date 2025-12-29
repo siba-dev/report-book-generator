@@ -2,7 +2,6 @@ package de.siba.reportbookgen.service
 
 import de.siba.reportbookgen.model.ReportBookWeekData
 import de.siba.reportbookgen.model.ReportBookWeekJson
-import de.siba.reportbookgen.model.SchoolSubjectsJson
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format
@@ -38,10 +37,7 @@ class ReportBookGenerationService {
     }
 
     fun generate(
-        inputDir: Path,
-        outputDir: Path,
-        yearMap: Map<Int, LocalDate>,
-        templateMap: Map<Int, Path>
+        inputDir: Path, outputDir: Path, yearMap: Map<Int, LocalDate>, templateMap: Map<Int, Path>
     ) {
         inputDir.walk()
             .filter { it.isRegularFile() && isJsonFile(it) }
@@ -73,8 +69,7 @@ class ReportBookGenerationService {
     }
 
     private fun mapData(
-        jsonModel: ReportBookWeekJson,
-        yearMap: Map<Int, LocalDate>
+        jsonModel: ReportBookWeekJson, yearMap: Map<Int, LocalDate>
     ): ReportBookWeekData {
         val weekNumber = jsonModel.number ?: throw IllegalStateException("Could not determine week number!")
 
@@ -84,40 +79,21 @@ class ReportBookGenerationService {
         val weekStart = startDate.plus(weekNumber - 1L, DateTimeUnit.WEEK)
         val weekEnd = weekStart.plus(4, DateTimeUnit.DAY) // Friday of the same week
 
-        val year = yearMap
-            .filter { it.value < weekStart }
-            .maxBy { it.value }
-            .key
+        val year = yearMap.filter { it.value < weekStart }
+            .maxBy { it.value }.key
 
         return ReportBookWeekData(
             weekNumber,
             weekStart,
             weekEnd,
             year,
-            jsonModel.activity.joinToString(", "),
+            jsonModel.activity,
             jsonModel.activity_hours,
-            jsonModel.teachings.joinToString(", "),
+            jsonModel.teachings,
             jsonModel.teachings_hours,
-            formatSchoolSubjects(jsonModel.school),
+            jsonModel.school,
             jsonModel.school_days * 8
         )
-    }
-
-    private fun formatSchoolSubjects(subjects: SchoolSubjectsJson): String {
-        val subjects = listOf(
-            "AWP" to subjects.awp,
-            "IT-T" to subjects.itt,
-            "IT-S" to subjects.its,
-            "D" to subjects.d,
-            "E" to subjects.e,
-            "Eth" to subjects.eth,
-            "PuG" to subjects.pug,
-            "BP" to subjects.bp,
-            "" to subjects.misc
-        )
-
-        return subjects.filter { (_, content) -> content.isNotBlank() }
-            .joinToString("; ") { (subject, content) -> "$subject${if (subject.isNotEmpty()) ": " else ""}$content" }
     }
 
     fun process(
@@ -142,13 +118,19 @@ class ReportBookGenerationService {
             "number" to data.weekNumber.toString(),
             "week_start" to data.weekStart.format(wordContentDateFormat),
             "week_end" to data.weekEnd.format(wordContentDateFormat),
-            "activity" to data.activity,
+            "activity" to data.activity.joinToString(", "),
             "activity_hours" to data.activityHours.toString(),
-            "teachings" to data.teachings,
+            "teachings" to data.teachings.joinToString(", "),
             "teachings_hours" to data.teachingsHours.toString(),
-            "school" to data.school,
+            "school" to formatSchoolSubjects(data.school),
             "school_hours" to data.schoolHours.toString()
         )
+    }
+
+    private fun formatSchoolSubjects(school: Map<String, String>): String {
+        return school.filter { it.value.isNotBlank() }
+            .map { it.key + if (it.key.isBlank()) "" else ": " + it.value }
+            .joinToString("; ")
     }
 
     private fun getOutputPath(outputDir: Path, data: ReportBookWeekData): Path {
