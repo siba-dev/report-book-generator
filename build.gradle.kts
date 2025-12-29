@@ -21,7 +21,10 @@ dependencies {
     // Add SLF4J implementation to fix logging warnings
     runtimeOnly(libs.slf4j)
 
-    implementation(libs.kotlin.json)
+    implementation(libs.kotlinx.json)
+    implementation(libs.kotlinx.datetime)
+
+    implementation(libs.clikt)
 }
 
 kotlin {

@@ -1,14 +1,15 @@
 package de.siba.reportbookgen.service
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.name
+import kotlin.io.path.walk
 
 class ReportBookValidationService {
-    fun findMissingWeeks(reportBookDirectory: File) {
+    fun validateWeeks(reportBookDirectory: Path) {
         val foundNumbers = mutableListOf<Int>()
 
-        reportBookDirectory.walkTopDown()
+        reportBookDirectory.walk()
             .filter { ReportBookGenerationService.isWordFile(it) }
             .forEach {
                 if (ReportBookGenerationService.isWordFile(it)) {

@@ -1,10 +1,9 @@
 package de.siba.reportbookgen.model
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import java.time.LocalDate
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.number
 
-data class ReportBookData(
+data class ReportBookWeekData(
     val weekNumber: Int,
     val weekStart: LocalDate,
     val weekEnd: LocalDate,
@@ -21,7 +20,7 @@ data class ReportBookData(
         if (totalHours > 40) {
             throw IllegalArgumentException("Hours add up to more then 40!")
         }
-        if (totalHours < 32 && weekStart.monthValue != 12) {
+        if (totalHours < 32 && weekStart.month.number != 12) {
             throw IllegalArgumentException("Hours add up to less then 32!")
         }
         if (totalHours % 8 != 0) {
