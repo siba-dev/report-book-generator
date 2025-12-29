@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.options.associate
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.path
+import de.siba.reportbookgen.service.ReportBookDataService
 import de.siba.reportbookgen.service.ReportBookGenerationService
 import de.siba.reportbookgen.service.ReportBookValidationService
 import kotlinx.datetime.LocalDate
@@ -41,17 +42,20 @@ class ReportBookGenerator : CliktCommand() {
         )
     })
 
-
     override fun run() {
         logger.info("Cleaning output directory '$outputDir'")
         Files.list(outputDir)
             .forEach { Files.delete(it) }
 
+        // Data
+        val dataService = ReportBookDataService()
+        val dataMap = dataService.loadAllWeeklyData(inputDir, yearMap)
+
         // Generation
         val generationService = ReportBookGenerationService()
 
         generationService.copyWordFiles(inputDir, outputDir)
-        generationService.generate(inputDir, outputDir, yearMap, templateMap)
+        generationService.generateWordFiles(dataMap, templateMap, outputDir)
 
         // Validation
         val validationService = ReportBookValidationService()

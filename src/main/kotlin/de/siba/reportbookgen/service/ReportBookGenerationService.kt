@@ -1,19 +1,19 @@
 package de.siba.reportbookgen.service
 
 import de.siba.reportbookgen.model.ReportBookWeekData
-import de.siba.reportbookgen.model.ReportBookWeekJson
-import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format
 import kotlinx.datetime.format.char
-import kotlinx.datetime.plus
-import kotlinx.serialization.json.Json
 import org.docx4j.model.datastorage.migration.VariablePrepare
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage.load
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.nio.file.Path
-import kotlin.io.path.*
+import kotlin.io.path.copyTo
+import kotlin.io.path.extension
+import kotlin.io.path.name
+import kotlin.io.path.walk
 
 class ReportBookGenerationService {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)!!
@@ -36,86 +36,36 @@ class ReportBookGenerationService {
             }
     }
 
-    fun generate(
-        inputDir: Path, outputDir: Path, yearMap: Map<Int, LocalDate>, templateMap: Map<Int, Path>
+    fun generateWordFiles(
+        dataMap: Map<Path, ReportBookWeekData>, templateMap: Map<Int, Path>, outputDir: Path
     ) {
-        inputDir.walk()
-            .filter { it.isRegularFile() && isJsonFile(it) }
-            .forEach {
-                process(it, outputDir, yearMap, templateMap)
+        dataMap.toSortedMap()
+            .forEach { (_, data) ->
+                logger.info("Generating word for week ${data.weekNumber}")
+
+                val templatePath = templateMap[data.year]
+                    ?: throw IllegalArgumentException("Template for year ${data.year} not found.")
+                val wordMlPackage = load(templatePath.toFile())!!
+
+                replaceVariables(data, wordMlPackage)
+
+                wordMlPackage.save(getOutputPath(outputDir, data).toFile())
             }
     }
 
-    fun process(
-        jsonPath: Path, outputDir: Path, yearMap: Map<Int, LocalDate>, templateMap: Map<Int, Path>
+    private fun replaceVariables(
+        data: ReportBookWeekData,
+        wordMlPackage: WordprocessingMLPackage
     ) {
-        try {
-            process(jsonPath, outputDir, loadData(jsonPath, yearMap), templateMap)
-        } catch (e: Exception) {
-            throw IllegalStateException("Error loading $jsonPath", e)
-        }
-    }
-
-    private fun loadData(jsonPath: Path, yearMap: Map<Int, LocalDate>): ReportBookWeekData {
-        val jsonContent = jsonPath.readText()
-        val jsonModel = Json.decodeFromString<ReportBookWeekJson>(jsonContent)
-
-        if (jsonModel.number == null) {
-            val fileNameWithoutExt = jsonPath.nameWithoutExtension
-            jsonModel.number = fileNameWithoutExt.toInt()
-        }
-
-        return mapData(jsonModel, yearMap)
-    }
-
-    private fun mapData(
-        jsonModel: ReportBookWeekJson, yearMap: Map<Int, LocalDate>
-    ): ReportBookWeekData {
-        val weekNumber = jsonModel.number ?: throw IllegalStateException("Could not determine week number!")
-
-        val startDate = yearMap[1] ?: throw IllegalArgumentException("Missing start date of year 1!")
-
-        // Calculate week start (Monday) and end (Friday) dates
-        val weekStart = startDate.plus(weekNumber - 1L, DateTimeUnit.WEEK)
-        val weekEnd = weekStart.plus(4, DateTimeUnit.DAY) // Friday of the same week
-
-        val year = yearMap.filter { it.value < weekStart }
-            .maxBy { it.value }.key
-
-        return ReportBookWeekData(
-            weekNumber,
-            weekStart,
-            weekEnd,
-            year,
-            jsonModel.activity,
-            jsonModel.activity_hours,
-            jsonModel.teachings,
-            jsonModel.teachings_hours,
-            jsonModel.school,
-            jsonModel.school_days * 8
-        )
-    }
-
-    fun process(
-        jsonPath: Path, outputDir: Path, data: ReportBookWeekData, templateMap: Map<Int, Path>
-    ) {
-        logger.info("Processing '${jsonPath.absolute()}'")
-
-        val templatePath = templateMap[data.year]!!
-        val wordMlPackage = load(templatePath.toFile())
-
         val variables = mapVariables(data)
-
         VariablePrepare.prepare(wordMlPackage)
-
         wordMlPackage.mainDocumentPart.variableReplace(variables)
-
-        wordMlPackage.save(getOutputPath(outputDir, data).toFile())
     }
 
     private fun mapVariables(data: ReportBookWeekData): Map<String, String> {
         return mapOf(
             "number" to data.weekNumber.toString(),
+            "year" to data.year.toString(),
             "week_start" to data.weekStart.format(wordContentDateFormat),
             "week_end" to data.weekEnd.format(wordContentDateFormat),
             "activity" to data.activity.joinToString(", "),
