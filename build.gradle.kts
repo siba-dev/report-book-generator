@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "2.2.0"
+    kotlin("plugin.serialization") version "2.2.0"
 }
 
 group = "com.siba"
@@ -12,10 +13,11 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
 
-    implementation("org.docx4j:docx4j-core:11.4.9")
+    // Complete docx4j stack
+    implementation("org.docx4j:docx4j-core:11.5.5")
+    implementation("org.docx4j:docx4j-JAXB-ReferenceImpl:11.5.5")
 
-    // Add docx4j JAXB Reference Implementation - this contains the missing NamespacePrefixMapper
-    implementation("org.docx4j:docx4j-JAXB-ReferenceImpl:11.4.9")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     // Add SLF4J implementation to fix logging warnings
     implementation("org.slf4j:slf4j-simple:2.0.9")
