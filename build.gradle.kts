@@ -4,6 +4,7 @@ plugins {
     kotlin("plugin.serialization") version libs.versions.kotlin
 
     id("com.autonomousapps.dependency-analysis") version "3.5.1"
+    id("com.gradleup.shadow") version "9.3.0"
 }
 
 group = "de.siba"
