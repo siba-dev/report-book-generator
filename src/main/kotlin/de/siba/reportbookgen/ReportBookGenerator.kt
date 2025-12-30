@@ -3,8 +3,10 @@ package de.siba.reportbookgen
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.parameters.options.associate
+import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
+import com.github.ajalt.clikt.parameters.types.int
 import com.github.ajalt.clikt.parameters.types.path
 import de.siba.reportbookgen.service.ReportBookDataService
 import de.siba.reportbookgen.service.ReportBookGenerationService
@@ -49,6 +51,14 @@ class ReportBookGenerator : CliktCommand() {
         )
     })
 
+    val copyWordFiles by option(
+        names = arrayOf("--copyWordFiles"), help = "Copy word files from input to output directory."
+    ).flag(default = false)
+
+    val maxHours by option(
+        names = arrayOf("--maxHours"), help = "Specifies a limit that weekly hours can not exceed."
+    ).int()
+
     override fun run() {
         logger.info("Cleaning output directory '$outputDir'")
         Files.list(outputDir)
@@ -58,14 +68,20 @@ class ReportBookGenerator : CliktCommand() {
         val dataService = ReportBookDataService()
         val dataMap = dataService.loadAllWeeklyData(inputDir, yearMap)
 
+        // Pre-Processing validation
+        val validationService = ReportBookValidationService()
+        if (maxHours != null) {
+            validationService.validateMaxHours(dataMap, maxHours!!)
+        }
+
         // Generation
         val generationService = ReportBookGenerationService()
-
-        generationService.copyWordFiles(inputDir, outputDir)
+        if (copyWordFiles) {
+            generationService.copyWordFiles(inputDir, outputDir)
+        }
         generationService.generateWordFiles(dataMap, templateMap, outputDir)
 
-        // Validation
-        val validationService = ReportBookValidationService()
+        // Post-Processing validation
         validationService.validateWeeks(outputDir)
     }
 }
