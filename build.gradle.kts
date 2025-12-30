@@ -32,5 +32,5 @@ kotlin {
 }
 
 application {
-    mainClass = "de.siba.repotbookgen.ReportBookGeneratorKt"
+    mainClass = "de.siba.reportbookgen.ReportBookGeneratorKt"
 }
