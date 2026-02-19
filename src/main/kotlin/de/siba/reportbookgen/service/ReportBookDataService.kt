@@ -50,7 +50,7 @@ class ReportBookDataService {
         val weekStart = startDate.plus(weekNumber - 1L, DateTimeUnit.WEEK)
         val weekEnd = weekStart.plus(4, DateTimeUnit.DAY) // Friday of the same week
 
-        val year = yearMap.filter { it.value < weekStart }
+        val year = yearMap.filter { it.value <= weekStart }
             .maxBy { it.value }.key
 
         return ReportBookWeekData(
