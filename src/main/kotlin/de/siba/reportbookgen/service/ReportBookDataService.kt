@@ -30,7 +30,7 @@ class ReportBookDataService {
 
             if (jsonModel.number == null) {
                 val fileNameWithoutExt = jsonPath.nameWithoutExtension
-                jsonModel.number = fileNameWithoutExt.toInt()
+                jsonModel.number = fileNameWithoutExt.toIntOrNull()
             }
 
             return mapData(jsonModel, yearMap)
