@@ -25,6 +25,10 @@ dependencies {
     implementation(libs.kotlinx.datetime)
 
     implementation(libs.clikt)
+
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.kotlin.test.junit)
+    testRuntimeOnly(libs.junit.platform)
 }
 
 kotlin {
@@ -33,4 +37,8 @@ kotlin {
 
 application {
     mainClass = "de.siba.reportbookgen.ReportBookGeneratorKt"
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
