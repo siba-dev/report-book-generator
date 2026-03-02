@@ -23,23 +23,23 @@ class ReportBookDataService {
         return result
     }
 
-    private fun loadWeeklyData(jsonPath: Path, yearMap: Map<Int, LocalDate>): ReportBookWeekData {
+    fun loadWeeklyData(jsonPath: Path, yearMap: Map<Int, LocalDate>): ReportBookWeekData {
+        val jsonModel: ReportBookWeekJson
         try {
-            val jsonContent = jsonPath.readText()
-            val jsonModel = Json.decodeFromString<ReportBookWeekJson>(jsonContent)
+            jsonModel = Json.decodeFromString<ReportBookWeekJson>(jsonPath.readText())
 
-            if (jsonModel.number == null) {
-                val fileNameWithoutExt = jsonPath.nameWithoutExtension
-                jsonModel.number = fileNameWithoutExt.toIntOrNull()
-            }
-
-            return mapData(jsonModel, yearMap)
         } catch (e: Exception) {
             throw RuntimeException("Error loading '$jsonPath'.", e)
         }
+
+        if (jsonModel.number == null) {
+            val fileNameWithoutExt = jsonPath.nameWithoutExtension
+            jsonModel.number = fileNameWithoutExt.toIntOrNull()
+        }
+        return mapData(jsonModel, yearMap)
     }
 
-    private fun mapData(
+    internal fun mapData(
         jsonModel: ReportBookWeekJson, yearMap: Map<Int, LocalDate>
     ): ReportBookWeekData {
         val weekNumber = jsonModel.number ?: throw IllegalStateException("Could not determine week number!")
