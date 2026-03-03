@@ -62,7 +62,7 @@ class ReportBookGenerationService {
         wordMlPackage.mainDocumentPart.variableReplace(variables)
     }
 
-    private fun mapVariables(data: ReportBookWeekData): Map<String, String> {
+    internal fun mapVariables(data: ReportBookWeekData): Map<String, String> {
         return mapOf(
             "number" to data.weekNumber.toString(),
             "year" to data.year.toString(),
