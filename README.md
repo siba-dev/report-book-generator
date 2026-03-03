@@ -95,6 +95,13 @@ java -jar report-book-generator-1.0.0-all.jar \
   -t "3=./templates/year3-template.docx"
 ```
 
+Parameters:
+
+| Parameter | Description                                                                                                                                                                                                                                                 |
+|-----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -y        | Parameter you can provide multiple times. <br/>Since the apprenticeship year changes can be shifted to match school holidays its provided as a map. <br/>You can find the start dates of the years in your contract.                                        |
+| -t        | Parameter you can use to specify which template year to use for the apprentice ship year. <br/>This can be specified per year since some templates (like the one I used) have predefined selects for the year which cant (easily) be altered wtih `docx4j`. |
+
 There are additional validation options available. See the help for more information.
 
 ## Limitations

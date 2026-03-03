@@ -5,6 +5,7 @@ slf4j = "2.0.9"
 kotlinx-json = "1.9.0"
 kotlinx-datetime = "0.7.1"
 clikt = "5.1.0"
+junit-jupiter = "5.12.1"
 
 [libraries]
 docx4j-core = { module = "org.docx4j:docx4j-core", version.ref = "docx4j" }
@@ -13,3 +14,6 @@ slf4j = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 kotlinx-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-json" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 clikt = { module = "com.github.ajalt.clikt:clikt", version.ref = "clikt" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+junit-platform = { module = "org.junit.platform:junit-platform-launcher" }
