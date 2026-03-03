@@ -1,7 +1,6 @@
 package de.siba.reportbookgen.model
 
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.number
 
 data class ReportBookWeekData(
     val weekNumber: Int,
