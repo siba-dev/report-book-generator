@@ -37,10 +37,14 @@ class ReportBookValidationService {
 
     fun validateMaxHours(dataMap: Map<Path, ReportBookWeekData>, maxHours: Int) {
         dataMap.forEach { (_, data) ->
-            val totalHours = data.schoolHours + data.teachingsHours + data.activityHours
-            if (totalHours > maxHours) {
-                throw IllegalArgumentException("Hours of week ${data.weekNumber} add up to $totalHours, which is more than the allowed $maxHours hours.")
-            }
+            validateMaxHours(data, maxHours)
+        }
+    }
+
+    fun validateMaxHours(data: ReportBookWeekData, maxHours: Int) {
+        val totalHours = data.schoolHours + data.teachingsHours + data.activityHours
+        if (totalHours > maxHours) {
+            throw IllegalArgumentException("Hours of week ${data.weekNumber} add up to $totalHours, which is more than the allowed $maxHours hours.")
         }
     }
 }
