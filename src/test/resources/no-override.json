@@ -1,0 +1,23 @@
+{
+  "activity": [
+    "Created an app",
+    "Updated another app"
+  ],
+  "activity_hours": "20",
+  "teachings": [
+    "Instructions using an app"
+  ],
+  "teachings_hours": "4",
+  "school": {
+    "AWP": "Some topic",
+    "IT-T": "",
+    "IT-S": "",
+    "D": "",
+    "E": "",
+    "Eth": "",
+    "PuG": "",
+    "BP": "",
+    "": ""
+  },
+  "school_days": "2"
+}
