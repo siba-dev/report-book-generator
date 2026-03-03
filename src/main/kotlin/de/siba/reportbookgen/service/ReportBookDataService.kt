@@ -23,34 +23,34 @@ class ReportBookDataService {
         return result
     }
 
-    private fun loadWeeklyData(jsonPath: Path, yearMap: Map<Int, LocalDate>): ReportBookWeekData {
+    fun loadWeeklyData(jsonPath: Path, yearMap: Map<Int, LocalDate>): ReportBookWeekData {
+        val jsonModel: ReportBookWeekJson
         try {
-            val jsonContent = jsonPath.readText()
-            val jsonModel = Json.decodeFromString<ReportBookWeekJson>(jsonContent)
+            jsonModel = Json.decodeFromString<ReportBookWeekJson>(jsonPath.readText())
 
-            if (jsonModel.number == null) {
-                val fileNameWithoutExt = jsonPath.nameWithoutExtension
-                jsonModel.number = fileNameWithoutExt.toInt()
-            }
-
-            return mapData(jsonModel, yearMap)
         } catch (e: Exception) {
             throw RuntimeException("Error loading '$jsonPath'.", e)
         }
+
+        if (jsonModel.number == null) {
+            val fileNameWithoutExt = jsonPath.nameWithoutExtension
+            jsonModel.number = fileNameWithoutExt.toIntOrNull()
+        }
+        return mapData(jsonModel, yearMap)
     }
 
-    private fun mapData(
+    internal fun mapData(
         jsonModel: ReportBookWeekJson, yearMap: Map<Int, LocalDate>
     ): ReportBookWeekData {
         val weekNumber = jsonModel.number ?: throw IllegalStateException("Could not determine week number!")
 
         val startDate = yearMap[1] ?: throw IllegalArgumentException("Missing start date of year 1!")
 
-        // Calculate week start (Monday) and end (Friday) dates
+        // Calculate week start (Monday) and end (Sunday) dates
         val weekStart = startDate.plus(weekNumber - 1L, DateTimeUnit.WEEK)
-        val weekEnd = weekStart.plus(4, DateTimeUnit.DAY) // Friday of the same week
+        val weekEnd = weekStart.plus(6, DateTimeUnit.DAY) // Sunday of the same week
 
-        val year = yearMap.filter { it.value < weekStart }
+        val year = yearMap.filter { it.value <= weekStart }
             .maxBy { it.value }.key
 
         return ReportBookWeekData(
