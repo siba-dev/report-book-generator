@@ -1,8 +1,6 @@
 package de.siba.reportbookgen.service
 
 import de.siba.reportbookgen.model.ReportBookWeekData
-import kotlinx.datetime.number
-import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.name
 import kotlin.io.path.walk
