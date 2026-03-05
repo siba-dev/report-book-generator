@@ -5,7 +5,7 @@ slf4j = "2.0.17"
 kotlinx-json = "1.10.0"
 kotlinx-datetime = "0.7.1"
 clikt = "5.1.0"
-junit-jupiter = "5.12.1"
+junit-jupiter = "6.0.3"
 
 [libraries]
 docx4j-core = { module = "org.docx4j:docx4j-core", version.ref = "docx4j" }
