@@ -86,7 +86,7 @@ To generate the Word files from your JSON data, use the `ReportBookGenerator` co
 Example usage:
 
 ```bash
-java -jar report-book-generator-1.0.0-all.jar \
+java -jar report-book-generator-1.2.0-all.jar \
   -i ./report-jsons \
   -o ./report-book \
   -y 1=2023-08-29 -y 2=2024-09-01 -y 3=2025-09-01 \
