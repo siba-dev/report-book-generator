@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.2.0"
-docx4j = "11.5.9"
+docx4j = "11.5.11"
 slf4j = "2.0.17"
 kotlinx-json = "1.10.0"
 kotlinx-datetime = "0.7.1"
